@@ -270,6 +270,7 @@ const processContacts = async (domain, hubId, q) => {
  * Get recently upserted meetings as 100 contacts per page
  */
 const processMeetings = async (domain, hubId, q) => {
+  
   const account = domain.integrations.hubspot.accounts.find(account => account.hubId === hubId);
 
   const lastPulledDate = new Date(account.lastPulledDates.meetings);
@@ -388,10 +389,16 @@ const processMeetings = async (domain, hubId, q) => {
         //Contact Details
         const contactIds = kvpMeetingXContact[meeting.id] || [];
 
+        //One sale rep can engage mmultiple contacts at a same ...
+        //here we are making an array of objct in case if we may have multiple contacts
         const contactsProperties = contactIds.map(id => ({
           contact_id: id,
           contact_email: kvpContactIdEmail[id] || null // Default email to null if missing
         }));
+
+        //facilitating all contacts email int a single field
+        const allContactsEmails = contactsProperties.map(contact => contact.contact_email).join(", ");
+
 
         //Meeting Details
         const isCreated = !lastPulledDate || (new Date(meeting.createdAt) > lastPulledDate);
@@ -408,13 +415,13 @@ const processMeetings = async (domain, hubId, q) => {
 
 
         const meetingProperties = {
-          hs_meeting_id: meeting.id,
-          hs_meeting_title: meeting.properties.hs_meeting_title,
-          hs_meeting_start_time: meeting.properties.hs_meeting_start_time,
-          hs_meeting_end_time: meeting.properties.hs_meeting_end_time,
-          hs_meeting_created_date: meeting.createdAt,
-          hs_meeting_updated_date: meeting.updatedAt,
-          updated_by : 'fac',
+          meeting_id: meeting.id,
+          meeting_title: meeting.properties.hs_meeting_title,
+          meeting_start_time: meeting.properties.hs_meeting_start_time,
+          meeting_end_time: meeting.properties.hs_meeting_end_time,
+          meeting_created_date: meeting.createdAt,
+          meeting_updated_date: meeting.updatedAt,
+          contact: allContactsEmails,
           contacts: contactsProperties
         };
 
