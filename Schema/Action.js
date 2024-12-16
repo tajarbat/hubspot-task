@@ -26,8 +26,8 @@ const ActionSchema = new Schema({
     meeting_updated_date: Date,
     contact: String,
     contacts: [{
-          contact_id: { type: String, required: true },
-          contact_email: { type: String, required: true }
+          contact_id: { type: String},
+          contact_email: { type: String}
         }]},
   userProperties: {
     company_id: String,
