@@ -1,3 +1,5 @@
+const Action = require('./Schema/Action');
+
 const disallowedValues = [
   '[not provided]',
   'placeholder',
@@ -22,9 +24,17 @@ const filterNullValuesFromObject = object =>
 
 const normalizePropertyName = key => key.toLowerCase().replace(/__c$/, '').replace(/^_+|_+$/g, '').replace(/_+/g, '_');
 
-const goal = actions => {
+const goal = async(actions) => {
+
   // this is where the data will be written to the database
-  console.log(actions);
+
+  try {
+    await Action.insertMany(actions);
+    console.log("value is stored to database");
+
+  } catch (err) {
+    console.log("it didn't work --- better luck next time ...! ");
+  }
 };
 
 module.exports = {

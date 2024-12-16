@@ -415,7 +415,7 @@ const processMeetings = async (domain, hubId, q) => {
           hs_meeting_created_date: meeting.createdAt,
           hs_meeting_updated_date: meeting.updatedAt,
           updated_by : 'fac',
-          contact: contactsProperties
+          contacts: contactsProperties
         };
 
         const actionTemplate = {
@@ -451,7 +451,7 @@ const processMeetings = async (domain, hubId, q) => {
 const createQueue = (domain, actions) => queue(async (action, callback) => {
   actions.push(action);
 
-  if (actions.length > 5) {
+  if (actions.length > 2000) {
     console.log('inserting actions to database', { apiKey: domain.apiKey, count: actions.length });
 
     const copyOfActions = _.cloneDeep(actions);
