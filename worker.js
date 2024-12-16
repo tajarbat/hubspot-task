@@ -273,7 +273,6 @@ const processMeetings = async (domain, hubId, q) => {
   const account = domain.integrations.hubspot.accounts.find(account => account.hubId === hubId);
 
   const lastPulledDate = new Date(account.lastPulledDates.meetings);
-  console.log(lastPulledDate);
 
   const now = new Date();
 
@@ -407,6 +406,7 @@ const processMeetings = async (domain, hubId, q) => {
 
         // meeting.hs_attendee_owner_ids
 
+
         const meetingProperties = {
           hs_meeting_id: meeting.id,
           hs_meeting_title: meeting.properties.hs_meeting_title,
@@ -467,7 +467,7 @@ const drainQueue = async (domain, actions, q) => {
   if (q.length() > 0) await q.drain();
 
   if (actions.length > 0) {
-    goal(actions)
+    await goal(actions)
   }
 
   return true;

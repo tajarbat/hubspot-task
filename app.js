@@ -23,6 +23,7 @@ mongoose
   .then(() => {
     console.log('connected to database');
     require('./Domain');
+    require('./Schema/Action')
 
     // worker setup
     require('./worker')();
