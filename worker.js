@@ -272,7 +272,7 @@ const processContacts = async (domain, hubId, q) => {
 const processMeetings = async (domain, hubId, q) => {
   const account = domain.integrations.hubspot.accounts.find(account => account.hubId === hubId);
 
-  const lastPulledDate = '2020-12-01T20:23:41.523Z';//new Date(account.lastPulledDates.meetings);
+  const lastPulledDate = new Date(account.lastPulledDates.meetings);
   console.log(lastPulledDate);
 
   const now = new Date();
@@ -328,8 +328,6 @@ const processMeetings = async (domain, hubId, q) => {
    
     const meetingsBatch = searchResult.results || [];
 
-    console.log(meetingsBatch)
-
     console.log('fetch meeting batch');
 
     offsetObject.after = parseInt(searchResult.paging?.next?.after);
@@ -384,8 +382,6 @@ const processMeetings = async (domain, hubId, q) => {
         contactsDetails.results.map(contact => [contact.id, contact.properties?.email || null])
       );
       
-      console.log("Successfully retrieved associations.");
-
       meetingsBatch.forEach(meeting => {
 
         if (!meeting.properties) return;
@@ -397,8 +393,6 @@ const processMeetings = async (domain, hubId, q) => {
           contact_id: id,
           contact_email: kvpContactIdEmail[id] || null // Default email to null if missing
         }));
-
-        console.log(contactsProperties);
 
         //Meeting Details
         const isCreated = !lastPulledDate || (new Date(meeting.createdAt) > lastPulledDate);
@@ -435,7 +429,6 @@ const processMeetings = async (domain, hubId, q) => {
           ...actionTemplate
         });
 
-        console.log(meetingProperties);
       });
 
     } //else is ending here
@@ -458,7 +451,7 @@ const processMeetings = async (domain, hubId, q) => {
 const createQueue = (domain, actions) => queue(async (action, callback) => {
   actions.push(action);
 
-  if (actions.length > 2000) {
+  if (actions.length > 5) {
     console.log('inserting actions to database', { apiKey: domain.apiKey, count: actions.length });
 
     const copyOfActions = _.cloneDeep(actions);
